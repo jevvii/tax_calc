@@ -1,0 +1,60 @@
+<!-- core/templates/core/login.html -->
+{% extends 'core/base.html' %} {% block title %}Login - Tax Calculator
+{% endblock title %} {% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">₱</div>
+            <h1>Tax Calculator</h1>
+            <p>Philippine TRAIN Law Calculator</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %} {% if form.non_field_errors %}
+            <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input
+                    type="text"
+                    name="username"
+                    id="id_username"
+                    class="form-input {% if form.username.errors %}error{% endif %}"
+                    required
+                    autofocus
+                />
+                {% if form.username.errors %}
+                <span class="field-error">{{ form.username.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                <input
+                    type="password"
+                    name="password"
+                    id="id_password"
+                    class="form-input {% if form.password.errors %}error{% endif %}"
+                    required
+                />
+                {% if form.password.errors %}
+                <span class="field-error">{{ form.password.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+                Sign In
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p class="text-muted">Secure tax calculation system</p>
+			<p class="text-muted">
+        Don’t have an account?
+        <a href="{% url 'register' %}" class="nav-link">Create one</a>
+    </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

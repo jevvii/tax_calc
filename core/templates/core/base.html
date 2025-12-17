@@ -1,0 +1,73 @@
+<!-- core/templates/core/base.html -->
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}Tax Calculator{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'core/css/styles.css' %}" />
+        {% block extra_css %}{% endblock %}
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="{% url 'dashboard' %}" class="nav-brand">
+                        <span class="brand-icon">₱</span>
+                        Tax Calculator
+                    </a>
+
+                    {% if user.is_authenticated %}
+                    <div class="nav-menu">
+                        <a href="{% url 'dashboard' %}" class="nav-link"
+                            >Dashboard</a
+                        >
+                        <a href="{% url 'tax_input' %}" class="nav-link"
+                            >New Calculation</a
+                        >
+
+                        <div class="nav-user">
+                            <span class="user-name"
+                                >{{ user.get_full_name|default:user.username }}</span
+                            >
+							<form method="post" action="{% url 'logout' %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn-logout">Logout</button>
+</form>
+
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages-container">
+            <div class="container">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Main Content -->
+        <main class="main-content">{% block content %}{% endblock %}</main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>
+                    &copy; 2023 Tax Calculator. Based on Philippine TRAIN Law
+                    (Part 2).
+                </p>
+            </div>
+        </footer>
+
+        {% block extra_js %}{% endblock %}
+    </body>
+</html>

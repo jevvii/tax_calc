@@ -1,0 +1,153 @@
+<!-- core/templates/core/dashboard.html -->
+{% extends 'core/base.html' %} 
+{% load humanize %}
+{% block title %}Dashboard - Tax Calculator {%endblock %} 
+{% block content %}
+<div class="container dashboard-container">
+    <!-- Welcome Section -->
+    <div class="dashboard-header">
+        <h2>Welcome, {{ user.get_full_name|default:user.username }}</h1>
+        <p class="subtitle">Your tax computation dashboard</p>
+    </div>
+
+    {% if has_tax_record %}
+    <!-- Tax Summary Card (Elevated) -->
+    <div class="tax-card-elevated">
+        <div class="tax-card-header">
+            <h3>Annual Tax Summary</h2>
+            <span class="tax-year-badge"
+                >Tax Year {{ tax_record.tax_year }}</span
+            >
+        </div>
+
+        <div class="tax-grid">
+            <div class="tax-item">
+                <span class="tax-label">Gross Income</span>
+                <span class="tax-value"
+                    >₱{{ tax_record.annual_gross_income|floatformat:3|intcomma }}</span
+                >
+            </div>
+
+            <div class="tax-item">
+                <span class="tax-label">Deductions</span>
+                <span class="tax-value deduction"
+                    >-₱{{ tax_record.allowable_deductions|floatformat:3|intcomma }}</span
+                >
+            </div>
+
+            <div class="tax-item">
+                <span class="tax-label">Net Taxable Income</span>
+                <span class="tax-value"
+                    >₱{{ tax_record.net_taxable_income|floatformat:3|intcomma }}</span
+                >
+            </div>
+
+            <div class="tax-item highlight">
+                <span class="tax-label">Annual Tax Due</span>
+                <span class="tax-value-primary"
+                    >₱{{ tax_record.annual_tax_due|floatformat:3|intcomma }}</span
+                >
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="tax-stats">
+            <div class="stat-item">
+                <span class="stat-label">Effective Tax Rate</span>
+                <span class="stat-value"
+                    >{{ tax_record.effective_tax_rate }}%</span
+                >
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Tax Bracket</span>
+                <span class="stat-value-small"
+                    >{{ tax_record.tax_bracket }}</span
+                >
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Last Updated</span>
+                <span class="stat-value-small"
+                    >{{ tax_record.updated_at|date:"M d, Y" }}</span
+                >
+            </div>
+        </div>
+
+        <div class="tax-card-actions">
+            <a href="{% url 'tax_input' %}" class="btn btn-primary"
+                >Update Calculation</a
+            >
+        </div>
+    </div>
+
+    <!-- Tax History -->
+    {% if tax_history %}
+    <div class="section">
+        <h4 class="section-title">Recent Calculations</h3>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Tax Year</th>
+                        <th>Gross Income</th>
+                        <th>Tax Due</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in tax_history %}
+                    <tr>
+                        <td>{{ record.created_at|date:"M d, Y" }}</td>
+                        <td>{{ record.tax_year }}</td>
+                        <td>
+                            ₱{{ record.annual_gross_income|floatformat:3|intcomma }}
+                        </td>
+                        <td>
+                            ₱{{ record.annual_tax_due|floatformat:3|intcomma }}
+                        </td>
+                        <td>
+                            {% if record.is_active %}
+                            <span class="badge badge-success">Active</span>
+                            {% else %}
+                            <span class="badge badge-secondary">Archived</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form
+                                method="post"
+                                action="{% url 'delete_record' record.pk %}"
+                                style="display: inline"
+                            >
+                                {% csrf_token %}
+                                <button
+                                    type="submit"
+                                    class="btn-link-danger"
+                                    onclick="return confirm('Delete this record?')"
+                                >
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %} {% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h3>No Tax Records Yet</h2>
+        <p>
+            Start by entering your income information to calculate your annual
+            tax.
+        </p>
+        <a href="{% url 'tax_input' %}" class="btn btn-primary btn-lg"
+            >Calculate Tax</a
+        >
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

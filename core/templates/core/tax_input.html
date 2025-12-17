@@ -1,0 +1,89 @@
+<!-- core/templates/core/tax_input.html -->
+{% extends 'core/base.html' %} {% block title %}Tax Input - Tax Calculator{% endblock %} {% block content %}
+<div class="container form-container">
+    <div class="form-card">
+        <div class="form-card-header">
+            <h1>Tax Calculation Input</h1>
+            <p>Enter your income details to calculate your annual tax</p>
+        </div>
+
+        <form method="post" class="tax-form">
+            {% csrf_token %} {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-group">
+                <label
+                    for="{{ form.annual_gross_income.id_for_label }}"
+                    class="form-label"
+                >
+                    {{ form.annual_gross_income.label }}
+                </label>
+                {{ form.annual_gross_income }} {% if form.annual_gross_income.help_text %}
+                <span class="form-help"
+                    >{{ form.annual_gross_income.help_text }}</span
+                >
+                {% endif %} {% if form.annual_gross_income.errors %}
+                <span class="field-error"
+                    >{{ form.annual_gross_income.errors.0 }}</span
+                >
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label
+                    for="{{ form.allowable_deductions.id_for_label }}"
+                    class="form-label"
+                >
+                    {{ form.allowable_deductions.label }}
+                </label>
+                {{ form.allowable_deductions }} {% if form.allowable_deductions.help_text %}
+                <span class="form-help"
+                    >{{ form.allowable_deductions.help_text }}</span
+                >
+                {% endif %} {% if form.allowable_deductions.errors %}
+                <span class="field-error"
+                    >{{ form.allowable_deductions.errors.0 }}</span
+                >
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label
+                    for="{{ form.tax_year.id_for_label }}"
+                    class="form-label"
+                >
+                    {{ form.tax_year.label }}
+                </label>
+                {{ form.tax_year }} {% if form.tax_year.help_text %}
+                <span class="form-help">{{ form.tax_year.help_text }}</span>
+                {% endif %} {% if form.tax_year.errors %}
+                <span class="field-error">{{ form.tax_year.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Calculate Tax
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg"
+                    >Cancel</a
+                >
+            </div>
+        </form>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>Tax Brackets (TRAIN Law 2023)</h3>
+            <ul class="tax-brackets-list">
+                <li>₱250,000 and below: <strong>0%</strong></li>
+                <li>₱250,001 - ₱400,000: <strong>15%</strong></li>
+                <li>₱400,001 - ₱800,000: <strong>20%</strong></li>
+                <li>₱800,001 - ₱2,000,000: <strong>25%</strong></li>
+                <li>₱2,000,001 - ₱8,000,000: <strong>30%</strong></li>
+                <li>Above ₱8,000,000: <strong>35%</strong></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -257,7 +257,14 @@ body {
     font-weight: 700;
     color: #fcd34d;
 }
-
+.tax-value,
+.tax-value-primary,
+.tax-value.deduction,
+.stat-value,
+.stat-value-small {
+    word-break: break-all; /* or break-word */
+    white-space: normal;
+}
 /* ========== Statistics ========== */
 .tax-stats {
     display: grid;
